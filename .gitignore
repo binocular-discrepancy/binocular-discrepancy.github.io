@@ -1,0 +1,23 @@
+.agents
+.specify
+
+# JavaScript/static site
+node_modules/
+dist/
+build/
+*.log
+.env*
+
+# Python/local validation
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/

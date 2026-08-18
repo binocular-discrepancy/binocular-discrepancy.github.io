@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Binocular Discrepancy Lab</title>
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Pinned CDN dependency for GitHub Pages static deployment. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell" id="app">
+      <section class="workspace" aria-labelledby="page-title">
+        <header class="workspace__header">
+          <div>
+            <p class="eyebrow">Binocular discrepancy experiments</p>
+            <h1 id="page-title">Per-eye stimulus configuration</h1>
+          </div>
+          <div class="session-panel" aria-live="polite">
+            <button class="enter-vr" id="enter-vr" type="button" disabled>Enter VR</button>
+            <p class="session-status" id="session-status">Checking immersive support...</p>
+          </div>
+        </header>
+
+        <section class="controls-grid" aria-label="Eye stimulus configuration">
+          <article class="eye-panel" data-eye-panel="left">
+            <header class="eye-panel__header">
+              <div>
+                <p class="panel-kicker">Left eye</p>
+                <h2>Left stimulus</h2>
+              </div>
+              <output class="eye-summary" id="left-summary" for="left-shape left-color left-rotation-x left-rotation-y left-rotation-z"></output>
+            </header>
+
+            <div class="preview-frame">
+              <canvas id="left-preview" aria-label="Left eye stimulus preview"></canvas>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>Shape</span>
+                <select id="left-shape" data-eye="left" data-field="shapeId"></select>
+              </label>
+
+              <label class="field">
+                <span>Color</span>
+                <input id="left-color" data-eye="left" data-field="color" type="color">
+              </label>
+
+              <label class="field">
+                <span>Rotation X</span>
+                <input id="left-rotation-x" data-eye="left" data-field="rotationX" type="range" min="-180" max="180" step="1">
+              </label>
+
+              <label class="field">
+                <span>Rotation Y</span>
+                <input id="left-rotation-y" data-eye="left" data-field="rotationY" type="range" min="-180" max="180" step="1">
+              </label>
+
+              <label class="field">
+                <span>Rotation Z</span>
+                <input id="left-rotation-z" data-eye="left" data-field="rotationZ" type="range" min="-180" max="180" step="1">
+              </label>
+            </div>
+          </article>
+
+          <article class="eye-panel" data-eye-panel="right">
+            <header class="eye-panel__header">
+              <div>
+                <p class="panel-kicker">Right eye</p>
+                <h2>Right stimulus</h2>
+              </div>
+              <output class="eye-summary" id="right-summary" for="right-shape right-color right-rotation-x right-rotation-y right-rotation-z"></output>
+            </header>
+
+            <div class="preview-frame">
+              <canvas id="right-preview" aria-label="Right eye stimulus preview"></canvas>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>Shape</span>
+                <select id="right-shape" data-eye="right" data-field="shapeId"></select>
+              </label>
+
+              <label class="field">
+                <span>Color</span>
+                <input id="right-color" data-eye="right" data-field="color" type="color">
+              </label>
+
+              <label class="field">
+                <span>Rotation X</span>
+                <input id="right-rotation-x" data-eye="right" data-field="rotationX" type="range" min="-180" max="180" step="1">
+              </label>
+
+              <label class="field">
+                <span>Rotation Y</span>
+                <input id="right-rotation-y" data-eye="right" data-field="rotationY" type="range" min="-180" max="180" step="1">
+              </label>
+
+              <label class="field">
+                <span>Rotation Z</span>
+                <input id="right-rotation-z" data-eye="right" data-field="rotationZ" type="range" min="-180" max="180" step="1">
+              </label>
+            </div>
+          </article>
+        </section>
+
+        <section class="mode-panel" aria-labelledby="mode-title">
+          <div>
+            <p class="panel-kicker">Presentation</p>
+            <h2 id="mode-title">Motion mode</h2>
+          </div>
+          <div class="segmented" role="group" aria-label="Presentation mode">
+            <label>
+              <input type="radio" name="presentation-mode" value="static" checked>
+              <span>Static</span>
+            </label>
+            <label>
+              <input type="radio" name="presentation-mode" value="animated">
+              <span>Animated</span>
+            </label>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
