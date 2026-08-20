@@ -1,8 +1,19 @@
 import * as THREE from "three";
-import { createLights, createReferenceEnvironment, createStimulusMesh } from "./stimuli.js";
+import {
+  SHARED_SCENE_LAYER,
+  createLights,
+  createReferenceEnvironment,
+  createStimulusMesh,
+} from "./stimuli.js";
 
 const LEFT_EYE_LAYER = 1;
 const RIGHT_EYE_LAYER = 2;
+const EYE_LAYER_BY_SIDE = Object.freeze({
+  left: LEFT_EYE_LAYER,
+  right: RIGHT_EYE_LAYER,
+});
+const DEBUG_XR_LAYERS = new URLSearchParams(window.location.search).has("debugXrLayers");
+const SHARED_LAYER_PROBE = new THREE.Object3D();
 
 let activeSession = null;
 let renderer = null;
@@ -11,6 +22,7 @@ let camera = null;
 let leftStimulus = null;
 let rightStimulus = null;
 let animationMode = "static";
+let hasReportedCameraLayers = false;
 let exitFocusTarget = null;
 let onStatusChange = () => {};
 
@@ -45,6 +57,54 @@ function cleanupScene() {
   rightStimulus = null;
   scene = null;
   camera = null;
+  hasReportedCameraLayers = false;
+}
+
+function configureBaseCameraLayers(baseCamera) {
+  baseCamera.layers.enable(SHARED_SCENE_LAYER);
+  baseCamera.layers.enable(LEFT_EYE_LAYER);
+  baseCamera.layers.enable(RIGHT_EYE_LAYER);
+}
+
+function assignStimulusToEyeLayer(stimulus, eye) {
+  const layer = EYE_LAYER_BY_SIDE[eye];
+  if (layer === undefined) {
+    throw new Error(`Unsupported eye "${eye}"`);
+  }
+
+  stimulus.layers.set(layer);
+  stimulus.userData.eyeLayer = layer;
+}
+
+function createEyeStimulus(eyeConfig) {
+  const stimulus = createStimulusMesh(eyeConfig);
+  assignStimulusToEyeLayer(stimulus, eyeConfig.eye);
+  stimulus.position.set(0, 0, -1.55);
+  return stimulus;
+}
+
+function reportXRCameraLayers() {
+  if (!DEBUG_XR_LAYERS || hasReportedCameraLayers || !renderer || !camera) {
+    return;
+  }
+
+  const xrCamera = renderer.xr.getCamera(camera);
+  const cameras = xrCamera.cameras ?? [];
+
+  if (cameras.length === 0) {
+    return;
+  }
+
+  hasReportedCameraLayers = true;
+  console.table(
+    cameras.map((subCamera, index) => ({
+      index,
+      layerMask: subCamera.layers.mask,
+      hasSharedLayer: subCamera.layers.test(SHARED_LAYER_PROBE),
+      seesLeftStimulus: subCamera.layers.test(leftStimulus),
+      seesRightStimulus: subCamera.layers.test(rightStimulus),
+    })),
+  );
 }
 
 function buildImmersiveScene(configuration) {
@@ -54,53 +114,30 @@ function buildImmersiveScene(configuration) {
 
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
   camera.position.set(0, 0, 0);
-  camera.layers.enable(LEFT_EYE_LAYER);
-  camera.layers.enable(RIGHT_EYE_LAYER);
+  configureBaseCameraLayers(camera);
 
-  leftStimulus = createStimulusMesh(configuration.leftEye);
-  rightStimulus = createStimulusMesh(configuration.rightEye);
-  leftStimulus.position.set(-0.06, 0, -1.55);
-  rightStimulus.position.set(0.06, 0, -1.55);
-  leftStimulus.layers.set(LEFT_EYE_LAYER);
-  rightStimulus.layers.set(RIGHT_EYE_LAYER);
+  leftStimulus = createEyeStimulus(configuration.leftEye);
+  rightStimulus = createEyeStimulus(configuration.rightEye);
 
   scene.add(leftStimulus, rightStimulus);
   animationMode = configuration.presentationMode;
 }
 
-function configurePerEyeLayers() {
-  const xrCamera = renderer.xr.getCamera(camera);
-  const cameras = xrCamera.cameras ?? [];
-
-  if (cameras[0]) {
-    cameras[0].layers.enable(0);
-    cameras[0].layers.enable(LEFT_EYE_LAYER);
-    cameras[0].layers.disable(RIGHT_EYE_LAYER);
-  }
-
-  if (cameras[1]) {
-    cameras[1].layers.enable(0);
-    cameras[1].layers.enable(RIGHT_EYE_LAYER);
-    cameras[1].layers.disable(LEFT_EYE_LAYER);
-  }
-}
-
 function renderFrame(time) {
-  configurePerEyeLayers();
-
   if (animationMode === "animated") {
     const spin = time * 0.00045;
     if (leftStimulus) {
       leftStimulus.rotation.y += 0.01;
-      leftStimulus.position.x = -0.1 + Math.sin(spin) * 0.04;
+      leftStimulus.position.x = Math.sin(spin) * 0.04;
     }
     if (rightStimulus) {
       rightStimulus.rotation.y -= 0.01;
-      rightStimulus.position.x = 0.1 + Math.cos(spin) * 0.04;
+      rightStimulus.position.x = Math.cos(spin) * 0.04;
     }
   }
 
   renderer.render(scene, camera);
+  reportXRCameraLayers();
 }
 
 function reportStatus(message, tone = "info") {

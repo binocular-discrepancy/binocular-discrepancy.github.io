@@ -1,5 +1,7 @@
 import * as THREE from "three";
 
+export const SHARED_SCENE_LAYER = 0;
+
 export const STIMULUS_SHAPES = Object.freeze([
   Object.freeze({ id: "triangle", label: "Triangle", dimension: "2D", supportsAnimation: true }),
   Object.freeze({ id: "square", label: "Square", dimension: "2D", supportsAnimation: true }),
@@ -85,6 +87,7 @@ export function createLights() {
   key.position.set(3, 4, 5);
 
   group.add(ambient, key);
+  group.traverse((object) => object.layers.set(SHARED_SCENE_LAYER));
   return group;
 }
 
@@ -99,5 +102,6 @@ export function createReferenceEnvironment() {
   back.position.set(0, 0.25, -2.4);
 
   group.add(back, grid);
+  group.traverse((object) => object.layers.set(SHARED_SCENE_LAYER));
   return group;
 }
