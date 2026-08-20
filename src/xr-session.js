@@ -4,7 +4,7 @@ import {
   createLights,
   createReferenceEnvironment,
   createStimulusMesh,
-} from "./stimuli.js";
+} from "./stimuli.js?v=20260820-1";
 
 const LEFT_EYE_LAYER = 1;
 const RIGHT_EYE_LAYER = 2;

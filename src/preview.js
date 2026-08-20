@@ -1,5 +1,9 @@
 import * as THREE from "three";
-import { createLights, createReferenceEnvironment, createStimulusMesh } from "./stimuli.js";
+import {
+  createLights,
+  createReferenceEnvironment,
+  createStimulusMesh,
+} from "./stimuli.js?v=20260820-1";
 
 const previews = new Map();
 

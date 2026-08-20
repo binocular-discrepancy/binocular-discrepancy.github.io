@@ -3,10 +3,10 @@ import {
   getConfiguration,
   updateEyeConfiguration,
   updatePresentationMode,
-} from "./config.js";
-import { initializePreviews, updatePreviews } from "./preview.js";
-import { getShapeById, STIMULUS_SHAPES } from "./stimuli.js";
-import { initializeXRSessionControls } from "./xr-session.js";
+} from "./config.js?v=20260820-1";
+import { initializePreviews, updatePreviews } from "./preview.js?v=20260820-1";
+import { getShapeById, STIMULUS_SHAPES } from "./stimuli.js?v=20260820-1";
+import { initializeXRSessionControls } from "./xr-session.js?v=20260820-1";
 
 const EYES = ["left", "right"];
 
