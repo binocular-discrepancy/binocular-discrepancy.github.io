@@ -1,17 +1,21 @@
 import {
+  DIAGNOSTIC_STIMULUS_PAIR,
+  applyDiagnosticConfiguration,
   formatEyeSummary,
   getConfiguration,
   updateEyeConfiguration,
   updatePresentationMode,
-} from "./config.js?v=20260820-1";
-import { initializePreviews, updatePreviews } from "./preview.js?v=20260820-1";
-import { getShapeById, STIMULUS_SHAPES } from "./stimuli.js?v=20260820-1";
-import { initializeXRSessionControls } from "./xr-session.js?v=20260820-1";
+} from "./config.js?v=20260820-2";
+import { initializePreviews, updatePreviews } from "./preview.js?v=20260820-2";
+import { getShapeById, STIMULUS_SHAPES } from "./stimuli.js?v=20260820-2";
+import { initializeXRSessionControls } from "./xr-session.js?v=20260820-2";
 
 const EYES = ["left", "right"];
 
 const dom = {
   enterVR: document.querySelector("#enter-vr"),
+  applyDiagnostic: document.querySelector("#apply-diagnostic"),
+  diagnosticStatus: document.querySelector("#diagnostic-status"),
   sessionStatus: document.querySelector("#session-status"),
   modeInputs: Array.from(document.querySelectorAll('input[name="presentation-mode"]')),
   controls: Array.from(document.querySelectorAll("[data-eye][data-field]")),
@@ -71,9 +75,16 @@ function syncSummaries(configuration) {
   });
 }
 
+function syncDiagnosticStatus(configuration) {
+  dom.diagnosticStatus.textContent = configuration.diagnosticActive
+    ? `Diagnostic active: ${DIAGNOSTIC_STIMULUS_PAIR.expectedLeftEye}; ${DIAGNOSTIC_STIMULUS_PAIR.expectedRightEye}. Same or merged image is fail.`
+    : "Custom configuration active.";
+}
+
 function render(configuration = getConfiguration()) {
   syncControls(configuration);
   syncSummaries(configuration);
+  syncDiagnosticStatus(configuration);
   updatePreviews(configuration);
 }
 
@@ -93,6 +104,10 @@ function bindConfigurationControls() {
         render(configuration);
       }
     });
+  });
+
+  dom.applyDiagnostic.addEventListener("click", () => {
+    render(applyDiagnosticConfiguration());
   });
 }
 

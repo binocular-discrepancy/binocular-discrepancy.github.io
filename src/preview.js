@@ -3,7 +3,7 @@ import {
   createLights,
   createReferenceEnvironment,
   createStimulusMesh,
-} from "./stimuli.js?v=20260820-1";
+} from "./stimuli.js?v=20260820-2";
 
 const previews = new Map();
 

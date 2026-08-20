@@ -134,7 +134,8 @@ h2 {
 }
 
 .eye-panel,
-.mode-panel {
+.mode-panel,
+.diagnostic-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.86);
@@ -225,9 +226,41 @@ input[type="range"] {
   accent-color: var(--accent);
 }
 
-.mode-panel {
+.mode-panel,
+.diagnostic-panel {
   margin-top: 18px;
   padding: 16px 18px;
+}
+
+.diagnostic-panel {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.diagnostic-status {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
+.diagnostic-action {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent-strong);
+  background: #ffffff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.diagnostic-action:hover {
+  color: #ffffff;
+  background: var(--accent);
 }
 
 .segmented {
@@ -273,13 +306,15 @@ input[type="range"] {
   .workspace__header,
   .controls-grid,
   .eye-panel__header,
-  .mode-panel {
+  .mode-panel,
+  .diagnostic-panel {
     grid-template-columns: 1fr;
   }
 
   .workspace__header,
   .eye-panel__header,
-  .mode-panel {
+  .mode-panel,
+  .diagnostic-panel {
     display: grid;
   }
 

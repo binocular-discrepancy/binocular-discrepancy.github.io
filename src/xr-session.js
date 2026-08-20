@@ -4,7 +4,7 @@ import {
   createLights,
   createReferenceEnvironment,
   createStimulusMesh,
-} from "./stimuli.js?v=20260820-1";
+} from "./stimuli.js?v=20260820-2";
 
 const LEFT_EYE_LAYER = 1;
 const RIGHT_EYE_LAYER = 2;
@@ -22,6 +22,7 @@ let camera = null;
 let leftStimulus = null;
 let rightStimulus = null;
 let animationMode = "static";
+let diagnosticActive = false;
 let hasReportedCameraLayers = false;
 let exitFocusTarget = null;
 let onStatusChange = () => {};
@@ -103,6 +104,8 @@ function reportXRCameraLayers() {
       hasSharedLayer: subCamera.layers.test(SHARED_LAYER_PROBE),
       seesLeftStimulus: subCamera.layers.test(leftStimulus),
       seesRightStimulus: subCamera.layers.test(rightStimulus),
+      threeRevision: THREE.REVISION,
+      diagnosticActive,
     })),
   );
 }
@@ -121,6 +124,7 @@ function buildImmersiveScene(configuration) {
 
   scene.add(leftStimulus, rightStimulus);
   animationMode = configuration.presentationMode;
+  diagnosticActive = Boolean(configuration.diagnosticActive);
 }
 
 function renderFrame(time) {
@@ -226,7 +230,8 @@ export async function enterImmersiveVR(configuration) {
     renderer.domElement.hidden = false;
     await renderer.xr.setSession(activeSession);
     renderer.setAnimationLoop(renderFrame);
-    reportStatus("Presenting configured per-eye stimuli in immersive VR.", "info");
+    const diagnostic = diagnosticActive ? " Diagnostic pair active." : "";
+    reportStatus(`Presenting per-eye stimuli in immersive VR with Three.js r${THREE.REVISION}.${diagnostic}`, "info");
   } catch (error) {
     activeSession = null;
     if (renderer) {

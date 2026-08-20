@@ -3,6 +3,8 @@ import * as THREE from "three";
 export const SHARED_SCENE_LAYER = 0;
 
 export const STIMULUS_SHAPES = Object.freeze([
+  Object.freeze({ id: "left-chevron", label: "Left chevron", dimension: "2D", supportsAnimation: true }),
+  Object.freeze({ id: "right-cross", label: "Right cross", dimension: "2D", supportsAnimation: true }),
   Object.freeze({ id: "triangle", label: "Triangle", dimension: "2D", supportsAnimation: true }),
   Object.freeze({ id: "square", label: "Square", dimension: "2D", supportsAnimation: true }),
   Object.freeze({ id: "ring", label: "Ring", dimension: "2D", supportsAnimation: true }),
@@ -46,6 +48,34 @@ function createMaterial(color, dimension) {
 
 function createGeometry(shapeId) {
   switch (shapeId) {
+    case "left-chevron":
+      return new THREE.ShapeGeometry(
+        new THREE.Shape([
+          new THREE.Vector2(-0.82, 0.62),
+          new THREE.Vector2(-0.16, 0),
+          new THREE.Vector2(-0.82, -0.62),
+          new THREE.Vector2(-0.42, -0.92),
+          new THREE.Vector2(0.58, 0),
+          new THREE.Vector2(-0.42, 0.92),
+        ]),
+      );
+    case "right-cross":
+      return new THREE.ShapeGeometry(
+        new THREE.Shape([
+          new THREE.Vector2(-0.2, 0.9),
+          new THREE.Vector2(0.2, 0.9),
+          new THREE.Vector2(0.2, 0.2),
+          new THREE.Vector2(0.9, 0.2),
+          new THREE.Vector2(0.9, -0.2),
+          new THREE.Vector2(0.2, -0.2),
+          new THREE.Vector2(0.2, -0.9),
+          new THREE.Vector2(-0.2, -0.9),
+          new THREE.Vector2(-0.2, -0.2),
+          new THREE.Vector2(-0.9, -0.2),
+          new THREE.Vector2(-0.9, 0.2),
+          new THREE.Vector2(-0.2, 0.2),
+        ]),
+      );
     case "triangle":
       return new THREE.CircleGeometry(0.9, 3);
     case "square":

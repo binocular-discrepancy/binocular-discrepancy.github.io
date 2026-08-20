@@ -9,7 +9,7 @@
     <script type="importmap">
       {
         "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+          "three": "https://cdn.jsdelivr.net/npm/three@0.185.0/build/three.module.js"
         }
       }
     </script>
@@ -128,9 +128,18 @@
             </label>
           </div>
         </section>
+
+        <section class="diagnostic-panel" aria-labelledby="diagnostic-title">
+          <div>
+            <p class="panel-kicker">Validation</p>
+            <h2 id="diagnostic-title">Eye isolation diagnostic</h2>
+            <p class="diagnostic-status" id="diagnostic-status">Custom configuration active.</p>
+          </div>
+          <button class="diagnostic-action" id="apply-diagnostic" type="button">Load diagnostic pair</button>
+        </section>
       </section>
     </main>
 
-    <script type="module" src="./src/app.js?v=20260820-1"></script>
+    <script type="module" src="./src/app.js?v=20260820-2"></script>
   </body>
 </html>

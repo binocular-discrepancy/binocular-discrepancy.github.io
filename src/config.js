@@ -24,7 +24,38 @@ const DEFAULT_CONFIGURATION = Object.freeze({
   updatedAt: 0,
 });
 
+export const DIAGNOSTIC_STIMULUS_PAIR = Object.freeze({
+  leftMarker: "magenta left chevron",
+  rightMarker: "cyan right cross",
+  leftColor: "#d000ff",
+  rightColor: "#00d5ff",
+  expectedLeftEye: "left eye sees only the magenta chevron",
+  expectedRightEye: "right eye sees only the cyan cross",
+});
+
+const DIAGNOSTIC_CONFIGURATION = Object.freeze({
+  leftEye: Object.freeze({
+    eye: "left",
+    shapeId: "left-chevron",
+    color: DIAGNOSTIC_STIMULUS_PAIR.leftColor,
+    rotationX: 0,
+    rotationY: -22,
+    rotationZ: 0,
+  }),
+  rightEye: Object.freeze({
+    eye: "right",
+    shapeId: "right-cross",
+    color: DIAGNOSTIC_STIMULUS_PAIR.rightColor,
+    rotationX: 0,
+    rotationY: 22,
+    rotationZ: 45,
+  }),
+  presentationMode: "animated",
+  updatedAt: 0,
+});
+
 let configuration = cloneConfiguration(DEFAULT_CONFIGURATION);
+let diagnosticActive = false;
 
 function cloneEye(eyeConfig) {
   return { ...eyeConfig };
@@ -57,11 +88,15 @@ function normalizeEyeUpdate(field, value) {
 }
 
 export function getConfiguration() {
-  return cloneConfiguration(configuration);
+  return {
+    ...cloneConfiguration(configuration),
+    diagnosticActive,
+  };
 }
 
 export function resetConfiguration() {
   configuration = cloneConfiguration(DEFAULT_CONFIGURATION);
+  diagnosticActive = false;
   return getConfiguration();
 }
 
@@ -81,6 +116,7 @@ export function updateEyeConfiguration(eye, field, value) {
     [key]: nextEye,
     updatedAt: configuration.updatedAt + 1,
   };
+  diagnosticActive = false;
 
   return getConfiguration();
 }
@@ -95,6 +131,17 @@ export function updatePresentationMode(mode) {
     presentationMode: mode,
     updatedAt: configuration.updatedAt + 1,
   };
+  diagnosticActive = false;
+
+  return getConfiguration();
+}
+
+export function applyDiagnosticConfiguration() {
+  configuration = {
+    ...cloneConfiguration(DIAGNOSTIC_CONFIGURATION),
+    updatedAt: configuration.updatedAt + 1,
+  };
+  diagnosticActive = true;
 
   return getConfiguration();
 }
